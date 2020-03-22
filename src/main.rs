@@ -9,12 +9,15 @@ use std::{
 };
 use crate::{
     agent::{Person, InfectionStatus},
-    model::{Model, step}
+    model::{
+        Model, 
+//        step
+    }
 };
 
 fn main() {
     let now = Instant::now();
-    let num_agents = 10000;
+    let num_agents = 10_000_000;
     let mut people = HashMap::new();
     for i in 0..num_agents {
         let person = Person { 
@@ -27,13 +30,12 @@ fn main() {
 
     let mut model = Model {
         people: people,
-        infection_probability: 0.1,
-        recovery_probability: 0.02
+        transmission_probability: 0.1,
+        recovery_probability: 0.02,
+        num_contacts_per_step: 100
     };
 
-    for _s in 0..10 {
-        step(&mut model).unwrap();
-    }
-    println!("{:?}", model.num_infected());
+    model.run(10).unwrap();
+
     println!("Main completed in {}s", now.elapsed().as_secs());
 }
