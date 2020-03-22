@@ -1,6 +1,7 @@
 pub mod agent;
 pub mod model; 
 pub mod errors;
+pub mod change;
 
 use std::{
     collections::HashMap,
@@ -13,7 +14,7 @@ use crate::{
 
 fn main() {
     let now = Instant::now();
-    let num_agents = 1000;
+    let num_agents = 10000;
     let mut people = HashMap::new();
     for i in 0..num_agents {
         let person = Person { 

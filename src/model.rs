@@ -4,12 +4,6 @@ use std::{
     },
     time::{Instant}
 };
-use rand::{
-    distributions::{
-        Uniform,
-        Distribution
-    }
-};
 use shuffle::{
     shuffler::Shuffler,
     fy::FisherYates
@@ -20,21 +14,19 @@ use crate::{
         InfectionStatus,
         Person
     },
-    errors::Error
+    errors::Error,
+    change::{
+        Change,
+        diceroll
+    }
 };
 
-fn diceroll() -> f64 {
-    let between = Uniform::from(0.0..1.0);
-    let mut rng = rand::thread_rng();
-    let sample = between.sample(&mut rng);
-    sample
-}
 
 #[derive(Debug)]
 pub struct Model {
     pub people: HashMap<usize, Person>,
     pub infection_probability: f64,
-    pub recovery_probability: f64
+    pub recovery_probability: f64,
 }
 
 impl Model {
@@ -43,12 +35,22 @@ impl Model {
             .filter(|p| p.is_infected())
             .count()
     }
-}
 
-pub enum Change {
-    BecomeInfected(usize),
-    RemainInfected(usize),
-    BecomeRecovered(usize),
+    pub fn num_people(&self) -> usize {
+        self.people.iter().count()
+    }
+
+    pub fn num_susceptible(&self) -> usize {
+        self.people.values()
+            .filter(|p| p.is_susceptible())
+            .count()
+    }
+
+    pub fn num_recovered(&self) -> usize {
+        self.people.values()
+            .filter(|p| p.is_recovered())
+            .count()
+    }
 }
 
 
