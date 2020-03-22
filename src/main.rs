@@ -31,11 +31,11 @@ fn main() {
     let mut model = Model {
         people: people,
         transmission_probability: 0.1,
-        recovery_probability: 0.02,
+        recovery_probability: 0.0001,
         num_contacts_per_step: 100
     };
 
-    model.run(10).unwrap();
+    model.run(100).unwrap();
 
     println!("Main completed in {}s", now.elapsed().as_secs());
 }
