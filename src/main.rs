@@ -3,7 +3,8 @@ pub mod model;
 pub mod errors;
 
 use std::{
-    collections::HashMap
+    collections::HashMap,
+    time::Instant
 };
 use crate::{
     agent::{Person, InfectionStatus},
@@ -11,6 +12,7 @@ use crate::{
 };
 
 fn main() {
+    let now = Instant::now();
     let num_agents = 1000;
     let mut people = HashMap::new();
     for i in 0..num_agents {
@@ -31,5 +33,6 @@ fn main() {
     for _s in 0..10 {
         step(&mut model).unwrap();
     }
-    println!("{:?}", model.num_infected())
+    println!("{:?}", model.num_infected());
+    println!("Main completed in {}s", now.elapsed().as_secs());
 }
