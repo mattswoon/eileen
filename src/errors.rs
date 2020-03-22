@@ -1,4 +1,7 @@
 
+#[derive(Debug)]
 pub enum Error {
-    Error
+    ShuffleError,
+    CouldntFindPerson,
+    BadChange(&'static str),
 }
