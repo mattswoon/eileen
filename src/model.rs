@@ -111,3 +111,9 @@ pub fn execute_changes(changes: &Vec<Change>, model: &mut Model) -> Result<(), E
     }
     Ok(())
 }
+
+pub fn step(model: &mut Model) -> Result<(), Error> {
+    let changes = queue_changes(model)?;
+    execute_changes(&changes, model)?;
+    Ok(())
+}
