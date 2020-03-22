@@ -43,8 +43,6 @@ pub enum Change {
 
 pub fn queue_changes(model: &Model) -> Result<Vec<Change>, Error> {
     let mut changes = Vec::new();
-    // iterate through random chunks of model.num_contacts and assume
-    // these people interact entirely with each other
     let mut rng = rand::thread_rng();
     let mut fy = FisherYates::default();
     let people: Vec<usize> = model.people.keys().map(|x| x.clone()).collect();
@@ -82,4 +80,34 @@ pub fn queue_changes(model: &Model) -> Result<Vec<Change>, Error> {
         }
     }
     Ok(changes)
+}
+
+
+pub fn execute_changes(changes: &Vec<Change>, model: &mut Model) -> Result<(), Error> {
+    for change in changes.iter() {
+        match change {
+            Change::RemainInfected(pid) => {
+                let person = model.people.get_mut(pid).ok_or(Error::Error)?;
+                match person.status {
+                    InfectionStatus::Infected(days) => person.status = InfectionStatus::Infected(days + 1),
+                    _ => return Err(Error::Error)
+                }
+            },
+            Change::BecomeInfected(pid) => {
+                let person = model.people.get_mut(pid).ok_or(Error::Error)?;
+                match person.status {
+                    InfectionStatus::Susceptible => person.status = InfectionStatus::Infected(0),
+                    _ => return Err(Error::Error)
+                }
+            },
+            Change::BecomeRecovered(pid) => {
+                let person = model.people.get_mut(pid).ok_or(Error::Error)?;
+                match person.status {
+                    InfectionStatus::Infected(_) => person.status = InfectionStatus::Recovered,
+                    _ => return Err(Error::Error)
+                }
+            }
+        }
+    }
+    Ok(())
 }
